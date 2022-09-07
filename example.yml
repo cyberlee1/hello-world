@@ -1,0 +1,34 @@
+name: CI Pipeline - Config Lib
+
+on:
+#  push:
+#    branches: [ main ]
+#  pull_request:
+#    branches: [ main ]    
+  workflow_dispatch:
+  
+jobs:
+  build:
+
+    runs-on: [ AWSAU0129 ]
+
+    steps:
+    - uses: actions/checkout@v2
+        
+    - name: NuGet - Restore Packages
+      run: |
+        nuget restore .\BMW.CentralConfigLibrary.csproj -MSBuildPath 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin'
+
+    #- name: Add msbuild to PATH
+      #uses: microsoft/setup-msbuild@v1.1
+      #with:
+        #vswhere-path: 'C:\Program Files (x86)\Microsoft Visual Studio\Installer\'
+        #vs-version: "[16.4,16.5]"  #Version of Visual Studio to search; defaults to latest if not specified
+
+    - name: Run MSBuild - BMW.CentralConfigLibrary.csproj
+      #run: |
+        #& 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe' .\BMW.CentralConfigLibrary.csproj /p:OutputPath=e:\temp\test\
+      run: |
+        & 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe' .\BMW.CentralConfigLibrary.csproj /p:OutputPath=\\fileshare-server.bmwfsau-dev.eu-central-1.aws.cloud.bmw\Beam\temp\test\${{ secrets.A_NEW_SECRET }}
+    - name: Setup Nuget
+      uses: nuget/setup-nuget@v1
